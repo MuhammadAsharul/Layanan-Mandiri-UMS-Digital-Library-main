@@ -1,0 +1,66 @@
+version: '2.0'
+
+services:
+   mysqldb:
+     image: mysql:5.7
+     restart: unless-stopped
+     env_file: ./.env
+     environment:
+       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+       - MYSQL_DATABASE=$MYSQLDB_DATABASE
+     ports:
+       - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+     volumes:
+       - db:/var/lib/mysql
+     networks:
+      - backend
+  
+  backend:
+    depends_on:
+      - mysqldb
+    build: ./backend
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+    $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+      - 7002:$PORT/tcp
+    environment:
+      - DB_HOST=$DB_HOST 
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_NAME=$DB_NAME
+      - DB_PORT=$DB_PORT
+      - MIDTRANS_IS_PRODUCTION = $MIDTRANS_IS_PRODUCTION
+      - SERVER_KEY_SANDBOX= $SERVER_KEY_SANDBOX
+      - CLIENT_KEY_SANDBOX = $CLIENT_KEY_SANDBOX
+      - CLIENT_ORIGIN= $CLIENT_ORIGIN
+    networks:
+      - backend
+      - frontend
+
+  frontend:
+    depends_on:
+      - backend
+    build:
+      context: ./frontend
+      args:
+        - VITE_BASE_URL= $VITE_BASE_URL
+     env_file: ./.env
+     environment:
+       - MIDTRANS_IS_PRODUCTION = false
+       - SERVER_KEY_SANDBOX= $SERVER_KEY_SANDBOX
+       - CLIENT_KEY_SANDBOX = $CLIENT_KEY_SANDBOX
+     volumes:
+       - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+    ports:
+       $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
+      - 5173:80/tcp
+    networks:
+      - frontend  
+
+volumes: 
+  db:
+
+networks:
+  backend:
+  frontend:

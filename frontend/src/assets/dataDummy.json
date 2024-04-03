@@ -1,0 +1,18 @@
+[
+    {
+        "date_due": "2023-05-08T23:59:59.000Z",
+        "title": "Komunikasi grafis :",
+        "barcode": "21-00363",
+        "branchname": "Main Library",
+        "renewals": 1,
+        "lastreneweddate": "2023-04-03T06:43:51.000Z"
+    },
+    {
+        "date_due": "2023-04-17T23:59:59.000Z",
+        "title": "The automotive body manufacturing systems and processes",
+        "barcode": "13-04042",
+        "branchname": "Main Library",
+        "renewals": 1,
+        "lastreneweddate": "2023-04-03T07:23:37.000Z"
+    }
+]
